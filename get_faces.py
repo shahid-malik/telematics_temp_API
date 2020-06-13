@@ -6,12 +6,6 @@ from datetime import timedelta
 from emails import *
 
 
-now = datetime.datetime.utcnow()
-now_start = now - timedelta(seconds=2000000000)
-start_time = datetime.datetime.strftime(now_start, '%Y-%m-%d %H:%M:%S')
-end_time = datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
-
-
 def ipc_get_attend_record_count():
     """
     Get Total Record Count
@@ -31,6 +25,9 @@ def ipc_query_attend_record():
     Get Attendance Records from AI Device
     :return:
     """
+    # start_time = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S.%f')
+    start_time = datetime.datetime.now()
+
     payload = {
         "startId": -1,
         "reqCount": 30,
@@ -46,11 +43,16 @@ def ipc_query_attend_record():
             name = obj['name']
             record_id = obj['id']
             timestamp = obj['timestamp']
+            timestamp = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S.%f')
+
             temperature_fahrenheit = float(obj['bodyTemperature'])
             temperature = round((temperature_fahrenheit * 9/5) + 32,2)
-            print("ID:  {}  Name:  {}, Temperature:  {}, TimeStamp:  {}".format(record_id, name, temperature, timestamp))
             image = obj['img']
-            if temperature > TEMPERATURE_LIMIT:
+
+            time_difference = (start_time - timestamp).total_seconds()
+            print("ID:  {}  Name:  {}, Temperature:  {}, Time Difference: {}, TimeStamp:  {}".format(record_id, name, temperature, time_difference, timestamp))
+
+            if temperature > TEMPERATURE_LIMIT and time_difference < TIME_PERIOD:
                 send_email(name, temperature, image, timestamp)
         return response
     else:
