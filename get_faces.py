@@ -1,3 +1,4 @@
+import time
 import json
 import requests
 from datetime import timedelta
@@ -59,4 +60,8 @@ def ipc_query_attend_record():
 if __name__ == "__main__":
     record_count = ipc_get_attend_record_count()
     print("Total Records: ", record_count)
-    ipc_query_attend_record()
+
+    while 1:
+        ipc_query_attend_record()
+        print("Waiting for 60 seconds")
+        time.sleep(TIME_PERIOD)

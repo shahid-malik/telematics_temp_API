@@ -23,3 +23,5 @@ TEMPERATURE_LIMIT = 90.0
 
 HEADERS = {'Content-Type': 'application/json'}
 BASE_URL = "http://" + MACHINE_IP + ":8080/api/v1/face/"
+
+TIME_PERIOD = 60
